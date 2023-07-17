@@ -1,8 +1,16 @@
 import {AppBar,Link,Toolbar,Badge,Typography,Box,Button,IconButton} from '@mui/material'
 import {SearchOutlined,ShoppingCartOutlined} from '@mui/icons-material'
 import  NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import {useContext} from 'react'
+import { UIContexto } from '@/Context/UIContext'
 
 export const NavBar = () => {
+
+  const {asPath}=useRouter();
+
+  const {ChangeMenu}=useContext(UIContexto);
+
   return (
     <AppBar>
         <Toolbar>
@@ -15,13 +23,13 @@ export const NavBar = () => {
         
                 <Box sx={{display:{xs:'none',sm:'block'}}}>
                     <Link href='/category/men' underline='none' component={NextLink}>
-                        <Button>Hombres</Button>
+                        <Button color={asPath==='/category/men' ? 'primary' : 'info'}>Hombres</Button>
                     </Link>
-                    <Link href='/category/women' underline='none' component={NextLink}>
-                        <Button>Mujeres</Button>
+                    <Link href='/category/women'  underline='none' component={NextLink}>
+                        <Button color={asPath==='/category/women' ? 'primary' : 'info'}>Mujeres</Button>
                     </Link>
-                    <Link href='/category/kid' underline='none' component={NextLink}>
-                        <Button>Niños</Button>
+                    <Link href='/category/kid'  underline='none' component={NextLink}>
+                        <Button color={asPath==='/category/kid' ? 'primary' : 'info'}>Niños</Button>
                     </Link>
                 </Box>
 
@@ -40,7 +48,7 @@ export const NavBar = () => {
                 </IconButton>
             </Link>
 
-            <Button>Menú</Button>
+            <Button onClick={ChangeMenu}>Menú</Button>
 
         </Toolbar>
     </AppBar>

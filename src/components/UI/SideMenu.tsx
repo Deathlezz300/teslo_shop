@@ -1,11 +1,24 @@
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
-
+import {useContext} from 'react'
+import { UIContexto } from "@/Context/UIContext"
+import { useRouter } from "next/router"
 
 export const SideMenu = () => {
+
+  const router=useRouter();
+
+  const {ShowMenu,ChangeMenu}=useContext(UIContexto);
+
+  const navigateTo=(url:string)=>{
+    ChangeMenu();
+    router.push(url);
+  }
+
   return (
     <Drawer
-        open={ false }
+        open={ ShowMenu }
+        onClose={ChangeMenu}
         anchor='right'
         sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
     >
@@ -44,21 +57,21 @@ export const SideMenu = () => {
                 </ListItem>
 
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+                <ListItem onClick={()=>navigateTo('/category/men')} button sx={{ display: { xs: '', sm: 'none' } }}>
                     <ListItemIcon>
                         <MaleOutlined/>
                     </ListItemIcon>
                     <ListItemText primary={'Hombres'} />
                 </ListItem>
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+                <ListItem onClick={()=>navigateTo('/category/women')} button sx={{ display: { xs: '', sm: 'none' } }}>
                     <ListItemIcon>
                         <FemaleOutlined/>
                     </ListItemIcon>
                     <ListItemText primary={'Mujeres'} />
                 </ListItem>
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+                <ListItem onClick={()=>navigateTo('/category/kid')} button sx={{ display: { xs: '', sm: 'none' } }}>
                     <ListItemIcon>
                         <EscalatorWarningOutlined/>
                     </ListItemIcon>
