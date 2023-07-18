@@ -12,5 +12,10 @@ export interface IProducto{
     gender: 'men'|'women'|'kid'|'unisex'
 }
 
+
+export interface IproductSlug{
+    slug:string
+}
+
 export type ISizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
 export type ITypes = 'shirts'|'pants'|'hoodies'|'hats';

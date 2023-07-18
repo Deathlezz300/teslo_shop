@@ -3,12 +3,27 @@ import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, Confirmati
 import {useContext} from 'react'
 import { UIContexto } from "@/Context/UIContext"
 import { useRouter } from "next/router"
+import { useForm } from "@/Hooks/useForm"
+
+const initalState={
+    input:''
+}
 
 export const SideMenu = () => {
 
   const router=useRouter();
 
+  const {input,onInputChange}=useForm(initalState);
+
   const {ShowMenu,ChangeMenu}=useContext(UIContexto);
+
+
+  const onSearchTerm=()=>{
+    if(input.trim().length===0) return ;
+
+    navigateTo(`/search/${input}`)
+
+  }
 
   const navigateTo=(url:string)=>{
     ChangeMenu();
@@ -29,10 +44,15 @@ export const SideMenu = () => {
                 <ListItem>
                     <Input
                         type='text'
+                        autoFocus
                         placeholder="Buscar..."
+                        name="input"
+                        onChange={onInputChange}
+                        onKeyUp={(e)=>e.key==='Enter' ? onSearchTerm() : ''}
+                        value={input}
                         endAdornment={
                             <InputAdornment position="end">
-                                <IconButton
+                                <IconButton onClick={onSearchTerm}
                                 aria-label="toggle password visibility"
                                 >
                                  <SearchOutlined />

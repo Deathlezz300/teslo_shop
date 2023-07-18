@@ -4,7 +4,8 @@ import useSWR,{SWRConfiguration} from 'swr'
 type peticion={
     ok:boolean,
     productos?:IProducto[],
-    message?:string
+    message?:string,
+    producto?:IProducto
 }
 
 export const useProductos=(url:string,config:SWRConfiguration={})=>{
@@ -14,7 +15,8 @@ export const useProductos=(url:string,config:SWRConfiguration={})=>{
     return{
         productos:data?.productos,
         isLoading:!error && !data,
-        isError:error
+        isError:error,
+        producto:data?.producto as IProducto
     }
 
 }

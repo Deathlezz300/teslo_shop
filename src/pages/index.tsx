@@ -20,7 +20,7 @@ const HomePage:NextPage=()=>{
         
         {
           isLoading ? <Loader/> : 
-          <ProductList products={productos || []}/>
+          <ProductList products={productos as IProducto[] || []}/>
         }
 
     </ShopLayout>
