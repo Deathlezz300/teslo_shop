@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import {useContext} from 'react'
 import { UIContexto } from '@/Context/UIContext'
 import { useForm } from '@/Hooks/useForm'
+import { CartContext } from '@/Context/CartContext'
 
 const initalState={
     input:''
@@ -19,6 +20,7 @@ export const NavBar = () => {
 
   const {ChangeMenu,ShowSearch,ChangeSearch}=useContext(UIContexto);
 
+  const {productos}=useContext(CartContext)
   
   const onSearchTerm=()=>{
     if(input.trim().length===0) return ;
@@ -91,7 +93,7 @@ export const NavBar = () => {
 
             <Link underline='none' component={NextLink} href='/cart'>
                 <IconButton>
-                    <Badge badgeContent={2} color='secondary'>
+                    <Badge badgeContent={productos.length} color='secondary'>
                         <ShoppingCartOutlined/>
                     </Badge>
                 </IconButton>

@@ -5,7 +5,10 @@ import {Box,Button,Card,CardContent,Divider,Grid, Typography} from '@mui/materia
 import { CartList } from '@/components/cart/CartList'
 import { OrderSummary } from '@/components/cart/OrderSummary'
 
+
  const CartPage:NextPage = () => {
+
+
   return (
     <ShopLayout title='Carrito' pageDescription='Carrito de compras'>
         <Typography variant='h1' component='h1'>Carrito</Typography>

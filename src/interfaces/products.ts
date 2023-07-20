@@ -9,7 +9,9 @@ export interface IProducto{
     tags: string[],
     title: string,
     type: ITypes,
-    gender: 'men'|'women'|'kid'|'unisex'
+    gender: 'men'|'women'|'kid'|'unisex',
+    createdAt:string,
+    updatedAt:string
 }
 
 

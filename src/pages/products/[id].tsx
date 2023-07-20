@@ -1,18 +1,18 @@
-import React from 'react'
+import React,{useState,useEffect, useContext} from 'react'
 import { NextPage } from 'next'
 import { ShopLayout } from '@/layouts/ShopLayout';
 import {Grid,Box, Typography, Button} from '@mui/material'
-import { initialData } from '@/database/products';
 import { ProductSlideShow } from '@/components/products/ProductSlideShow';
 import { ItemCounter } from '@/components/UI/ItemCounter';
 import { SizeSelector } from '@/components/products/SizeSelector';
-import { GetServerSideProps } from 'next'
 import { GetProductBySlug, GetSlugs } from '@/database/GetProductGender';
-import { IProducto } from '@/interfaces/products';
+import { IProducto, ISizes } from '@/interfaces/products';
 import { Loader } from '@/components/UI/Loader';
 import { GetStaticPaths } from 'next'
 import { GetStaticProps } from 'next'
 import { useProductos } from '@/Hooks/useProducts';
+import { ICartProducto } from '@/interfaces/Cart';
+import { CartContext } from '@/Context/CartContext';
 
 interface  props{
     product:IProducto,
@@ -20,7 +20,51 @@ interface  props{
 
  const ProductPage:NextPage<props> = ({product}) => {
 
+
     const {producto,isLoading}=useProductos(`/productos/${product.slug}`);
+
+    const [TemProduct,SetTemProduct]=useState<ICartProducto>({} as ICartProducto);
+
+    const {onAddProductCart}=useContext(CartContext);
+
+    const onChangeSize=(size:ISizes)=>{
+        SetTemProduct({
+            ...TemProduct,
+            sizes:size
+        })
+    }
+
+    const AddProductCard=()=>{
+        if(TemProduct.sizes){
+            onAddProductCart(TemProduct);
+        }
+    }
+
+    const onChangeQuantity=(tipo:string)=>{
+        if(tipo==='mas' && producto.inStock>TemProduct.quantity){
+            return SetTemProduct({
+                ...TemProduct,
+                quantity:TemProduct.quantity+1
+            })
+        }
+
+        return TemProduct.quantity>1 ? SetTemProduct({...TemProduct,quantity:TemProduct.quantity-1}) : ''
+    }
+
+    useEffect(()=>{
+        if(!isLoading){
+            SetTemProduct({
+                _id:product._id,
+                images:product.images[0],
+                price:producto.price,
+                sizes:undefined,
+                slug:product.slug,
+                title:product.title,
+                gender:product.gender,
+                quantity:1
+            })
+        }
+    },[producto,isLoading])
 
     if(isLoading){
         return <Loader/>
@@ -39,11 +83,17 @@ interface  props{
                             
                             <Box sx={{my:2}}>
                                 <Typography variant='subtitle2'>Cantidad</Typography>
-                                <ItemCounter/>
-                                <SizeSelector selectedSize={producto.sizes[0]} sizes={producto.sizes}/>
+                                <ItemCounter quantity={TemProduct.quantity} ChangeQuantity={onChangeQuantity}/>
+                                <SizeSelector ChangeSize={onChangeSize} selectedSize={TemProduct.sizes} sizes={producto.sizes}/>
                             </Box>
 
-                            <Button color='secondary' className='circular-btn'>Agregar al carrito</Button>
+                            {
+                                producto.inStock>0 ? <Button onClick={AddProductCard} color='secondary' className='circular-btn'>
+                                {
+                                    TemProduct.sizes ? 'Agregar al carrito' : 'Seleccione una talla'
+                                }
+                                </Button> : ''
+                            }
 
                             <Box sx={{mt:3}}>
                                 <Typography variant='subtitle2'>Descripcion</Typography>
