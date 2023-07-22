@@ -1,6 +1,7 @@
 import { connectMongo,disconnectMongose } from "@/database/Database";
-import { initialData } from "@/database/products";
+import { SeedUsers, initialData } from "@/database/products";
 import Producto from "@/models/Producto";
+import User from "@/models/Usuario";
 import { NextApiRequest,NextApiResponse } from "next";
 
 
@@ -19,6 +20,10 @@ export default async function handler(req:NextApiRequest,res:NextApiResponse<Dat
     await Producto.deleteMany();
 
     await Producto.insertMany(initialData);
+
+    await User.deleteMany();
+
+    await User.insertMany(SeedUsers);
 
     await disconnectMongose();
 
