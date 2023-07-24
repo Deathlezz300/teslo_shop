@@ -36,8 +36,6 @@ const validateToken=async(req:NextApiRequest,res:NextApiResponse<Data>)=>{
 
     const {token=''}=req.cookies;
 
-    console.log(token);
-
     if(token===''){
         return res.status(400).json({
             ok:false,

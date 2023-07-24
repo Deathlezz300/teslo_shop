@@ -6,6 +6,7 @@ import {Box,Link,Button,Grid, TextField, Typography,Chip} from '@mui/material'
 import NextLink from "next/link";
 import { useContext } from "react";
 import {useForm} from 'react-hook-form';
+import { useRouter } from "next/router";
 
 interface formData{
     email:string,
@@ -19,8 +20,19 @@ interface formData{
 
   const {errors:errores,status,startRegister}=useContext(AuthContext);
 
-  const onStartRegister=({email,name,password}:formData)=>{
-    startRegister(email,password,name)
+  const router=useRouter();
+
+  const getPath=()=>{
+    const destination=router.query.p?.toString() || '/';
+    return destination;
+}
+
+  const onStartRegister=async({email,name,password}:formData)=>{
+     const isValid=await startRegister(email,password,name);
+     if(isValid){
+        const destination=getPath()
+        router.replace(destination);
+     }
   }
 
   return (
@@ -47,7 +59,7 @@ interface formData{
                         })} label="Correo" error={!!errors.email} helperText={errors.email?.message} variant="filled" fullWidth/>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField {...register('password',{
+                        <TextField type="password" {...register('password',{
                             required:'La contraseña es obligatoria',
                             minLength:{value:6,message:'La contraseña debe ser mayor a 6 caracteres'}
                         })} label="Contraseña" error={!!errors.password} helperText={errors.password?.message} variant="filled" fullWidth/>
@@ -56,7 +68,7 @@ interface formData{
                         <Button disabled={status==='loading' ? true :false} type="submit" form='form2' color="secondary" className="circular-btn" size="large" fullWidth>Crear cuenta</Button>
                     </Grid>
                     <Grid item xs={12} display='flex' justifyContent='end'>
-                        <Link href="/auth/login" underline="always" component={NextLink} >Ya tienes cuenta?</Link>
+                        <Link href={`/auth/login?p=${getPath()}`} underline="always" component={NextLink} >Ya tienes cuenta?</Link>
                     </Grid>
                 </Grid>
             </Box>

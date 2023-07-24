@@ -4,6 +4,7 @@ import { AuthReducer, ReducerState } from "./AuthReducer";
 import { ReducerUser} from "@/interfaces/User";
 import tesloApi from "@/api/teslo_api";
 import Cookie from 'js-cookie';
+import { useRouter } from "next/router";
 
 interface props{
     children:JSX.Element | JSX.Element[]
@@ -18,10 +19,15 @@ const inital_state:ReducerState={
 
 export const AuthProvider:FC<props> =({children})=>{
 
+    const router=useRouter();
+
     const [state,dispatch]=useReducer(AuthReducer,inital_state);
 
     const startAuthenticating=async()=>{
         try{
+
+            if(!Cookie.get('token')) return ;
+
 
             const {data}=await tesloApi.get('/auth/validate-token');        
     
@@ -48,7 +54,7 @@ export const AuthProvider:FC<props> =({children})=>{
         startAuthenticating();
     },[])
 
-    const startLogin=async(email:string,password:string)=>{
+    const startLogin=async(email:string,password:string):Promise<boolean>=>{
         dispatch({type:'SET-STATUS',payload:'loading'});
         try{
 
@@ -65,16 +71,19 @@ export const AuthProvider:FC<props> =({children})=>{
 
             dispatch({type:'SET-USER',payload:userToReducer});
 
+            return true;
+
         }catch(error:any){
             dispatch({type:'SET-ERRORS',payload:error.response.data.message});
             setTimeout(()=>{
                 dispatch({type:'SET-ERRORS',payload:null})
-            },3000)            
+            },3000)
+            return false;            
         }
 
     }
 
-    const startRegister=async(email:string,password:string,name:string)=>{
+    const startRegister=async(email:string,password:string,name:string):Promise<boolean>=>{
         dispatch({type:'SET-STATUS',payload:'loading'});
         try{
 
@@ -91,17 +100,29 @@ export const AuthProvider:FC<props> =({children})=>{
 
             dispatch({type:'SET-USER',payload:userToReducer});
 
+            return true;
+
         }catch(error:any){
             dispatch({type:'SET-ERRORS',payload:error.response.data.message});
             setTimeout(()=>{
                 dispatch({type:'SET-ERRORS',payload:null})
-            },3000)            
+            },3000)
+            
+            return false;
         }
 
     }
 
+    const startLogOut=()=>{
+        dispatch({type:'LOG-OUT'});
+        Cookie.remove('token');
+        Cookie.remove('cart');
+        //Recargar la aplicacion como si se diese f5
+        router.reload();
+    }
+
     return(
-        <AuthContext.Provider value={{...state,startLogin,startRegister}}>
+        <AuthContext.Provider value={{...state,startLogin,startRegister,startLogOut}}>
             {children}
         </AuthContext.Provider>
     )

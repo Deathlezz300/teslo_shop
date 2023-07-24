@@ -5,6 +5,7 @@ import { ICartProducto } from "@/interfaces/Cart";
 import Cookie from 'js-cookie'
 import { AddProductCalculate, RemoveProductCalculate, calculateTotal,
      changeCantidadCalculate, valoresPrecios } from "./Helpers/CalculateTotal";
+import { formData } from "@/pages/checkout/address";
 
 interface props{
     children:JSX.Element | JSX.Element[]
@@ -17,12 +18,19 @@ export const CartProvider:FC<props>=({children})=>{
 
     const [valoresPrecios,SetValores]=useState<valoresPrecios>({total:0,subtotal:0,impuestos:0});
 
+    const [status,SetStatus]=useState<boolean>(false);
+
     const [firtsCharge,SetCharge]=useState<boolean>(true);
+
+    const [direccion,SetDireccion]=useState<formData>({} as formData);
 
     useEffect(()=>{
         const productos=Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : []
+        const dataForm=Cookie.get('direccion') ? JSON.parse(Cookie.get('direccion')!) : {}
         dispatch({type:'SET-CART',payload:productos});
         SetValores(calculateTotal(productos));
+        SetDireccion(dataForm);
+        SetStatus(true)
     },[])
 
     useEffect(()=>{
@@ -68,9 +76,13 @@ export const CartProvider:FC<props>=({children})=>{
         dispatch(action);
         SetValores(RemoveProductCalculate(valoresPrecios,producto))
     }
+
+    const ChangeDireccion=(data:formData)=>{
+        SetDireccion(data);
+    }
     
     return(
-        <CartContext.Provider value={{productos:state,onAddProductCart,LessProductoCard,RemoveFromCart,valoresPrecios}}>
+        <CartContext.Provider value={{productos:state,onAddProductCart,LessProductoCard,RemoveFromCart,valoresPrecios,status,direccion,ChangeDireccion}}>
             {children}
         </CartContext.Provider>
     )

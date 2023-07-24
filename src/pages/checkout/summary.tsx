@@ -1,12 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ShopLayout } from '@/layouts/ShopLayout';
 import { CartList } from '@/components/cart/CartList';
 import { Link,Typography,Grid,Card,CardContent,Divider,Box,Button } from '@mui/material';
 import { OrderSummary } from '@/components/cart/OrderSummary';
 import NextLink from 'next/link';
+import { useContext } from 'react';
+import { CartContext } from '@/Context/CartContext';
+import { useRouter } from 'next/router';
+import { formData } from './address';
+import { Loader } from '@/components/UI/Loader';
 
+const Summary = () => {
 
-const summary = () => {
+  const {productos,direccion,status}=useContext(CartContext);
+
+  const router=useRouter();
+
+  useEffect(()=>{
+    if(status && Object.keys(direccion).length===0){
+        router.push('/checkout/address')
+    }
+  },[status,direccion,router])
+
+  if(!status){
+    return (<><Loader/></>)
+  }
+
   return (
     <ShopLayout title='Resumen de orden' pageDescription='Resumen de orden'>
     <Typography variant='h1' component='h1'>Resumen de la orden</Typography>
@@ -18,7 +37,7 @@ const summary = () => {
         <Grid item xs={12} sm={5}>
             <Card className='summary-cart'>
                 <CardContent>
-                    <Typography variant='h2'>Resumen 3 productos</Typography>
+                    <Typography variant='h2'>Resumen {`${productos.length} Producto${productos.length>1 ? 's' : ''}`}</Typography>
                     <Divider sx={{my:1}}/>
 
                     <Box display='flex' justifyContent='space-between'>
@@ -26,11 +45,11 @@ const summary = () => {
                         <Link underline='always' href='/checkout/address' component={NextLink}>Editar</Link>
                     </Box>
 
-                    <Typography variant='subtitle1'>Alejandro Toledo</Typography>
-                    <Typography variant='subtitle1'>Alguna casa</Typography>
-                    <Typography variant='subtitle1'>190002</Typography>
-                    <Typography variant='subtitle1'>Colombia</Typography>
-                    <Typography variant='subtitle1'>+68 2372837</Typography>
+                    <Typography variant='subtitle1'>{direccion.nombre+direccion.apellido}</Typography>
+                    <Typography variant='subtitle1'>{direccion.direccion}{direccion.direccion2 ? `${direccion.direccion2}` : ''}</Typography>
+                    <Typography variant='subtitle1'>{direccion.cod_postal}</Typography>
+                    <Typography variant='subtitle1'>{direccion.pais}</Typography>
+                    <Typography variant='subtitle1'>{direccion.telefono}</Typography>
 
                     <Divider sx={{my:1}}/>
 
@@ -53,4 +72,4 @@ const summary = () => {
   )
 }
 
-export default summary;
+export default Summary;
