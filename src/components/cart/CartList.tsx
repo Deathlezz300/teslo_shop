@@ -54,7 +54,7 @@ export const CartList:FC<props> = ({editable}) => {
                         </Box>
                     </Grid>
                     <Grid item xs={2} display='flex' alignItems='center' flexDirection='column'>
-                        <Typography variant='subtitle1'>{product.price}</Typography>
+                        <Typography variant='subtitle1'>${product.price}</Typography>
                         {
                             editable && (<Button onClick={()=>RemoveFromCart(product)} variant='text' color='secondary'>Remover</Button>)
                         }

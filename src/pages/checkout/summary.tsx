@@ -9,20 +9,21 @@ import { CartContext } from '@/Context/CartContext';
 import { useRouter } from 'next/router';
 import { formData } from './address';
 import { Loader } from '@/components/UI/Loader';
+import Cookie from 'js-cookie';
 
 const Summary = () => {
 
-  const {productos,direccion,status}=useContext(CartContext);
+  const {productos,direccion}=useContext(CartContext);
 
   const router=useRouter();
 
   useEffect(()=>{
-    if(status && Object.keys(direccion).length===0){
+    if(!Cookie.get('direccion')){
         router.push('/checkout/address')
     }
-  },[status,direccion,router])
+  },[router])
 
-  if(!status){
+  if(Object.keys(direccion).length===0){
     return (<><Loader/></>)
   }
 
