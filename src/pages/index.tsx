@@ -7,7 +7,6 @@ import { useProductos } from "@/Hooks/useProducts";
 import { Loader } from "@/components/UI/Loader";
 
 
-
 const HomePage:NextPage=()=>{
 
    const {productos,isLoading}=useProductos('/productos');

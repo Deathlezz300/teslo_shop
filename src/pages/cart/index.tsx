@@ -43,7 +43,7 @@ import { Loader } from '@/components/UI/Loader'
                         <OrderSummary/>
 
                         <Box sx={{mt:3}}>
-                            <Button onClick={()=>router.push('/checkout/summary')} color='secondary' className='circular-btn' fullWidth>Checkout</Button>
+                            <Button onClick={()=>router.push('/checkout/address')} color='secondary' className='circular-btn' fullWidth>Checkout</Button>
                         </Box>
 
                     </CardContent>

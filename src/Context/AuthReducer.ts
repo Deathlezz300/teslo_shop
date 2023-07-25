@@ -11,7 +11,6 @@ type ActionType=
 export interface ReducerState{
     status:IStatus,
     user:ReducerUser,
-    token:string,
     errors:string | null
 }
 
@@ -27,7 +26,6 @@ export const AuthReducer=(state:ReducerState,action:ActionType):ReducerState=>{
                     name:action.payload.name,
                     role:action.payload.role
                 },
-                token:action.payload.token as string,
                 status:'authenticated'
             }
 
@@ -42,7 +40,6 @@ export const AuthReducer=(state:ReducerState,action:ActionType):ReducerState=>{
             return {
                 status:'not-authenticated',
                 user:{} as ReducerUser,
-                token:'',
                 errors:null
             }
 

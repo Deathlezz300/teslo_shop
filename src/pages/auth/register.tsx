@@ -7,6 +7,8 @@ import NextLink from "next/link";
 import { useContext } from "react";
 import {useForm} from 'react-hook-form';
 import { useRouter } from "next/router";
+import { getSession, signIn } from "next-auth/react";
+import { GetServerSideProps } from 'next'
 
 interface formData{
     email:string,
@@ -30,8 +32,9 @@ interface formData{
   const onStartRegister=async({email,name,password}:formData)=>{
      const isValid=await startRegister(email,password,name);
      if(isValid){
-        const destination=getPath()
-        router.replace(destination);
+        await signIn('credentials',{email,password});
+        // const destination=getPath()
+        // router.replace(destination);
      }
   }
 
@@ -75,6 +78,30 @@ interface formData{
         </form>
     </AuthLayout>
   )
+}
+
+
+
+export const getServerSideProps: GetServerSideProps = async ({req,query}) => {
+    
+    const session=await getSession({req});
+
+    const {p='/'}=query;
+
+    if(session){
+        return{
+            redirect:{
+                destination:p.toString(),
+                permanent:false
+            }
+        }
+    }
+
+    return {
+        props: {
+            
+        }
+    }
 }
 
 export default RegisterPage;

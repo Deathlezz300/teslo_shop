@@ -5,6 +5,7 @@ import { ReducerUser} from "@/interfaces/User";
 import tesloApi from "@/api/teslo_api";
 import Cookie from 'js-cookie';
 import { useRouter } from "next/router";
+import {useSession,signOut} from 'next-auth/react'
 
 interface props{
     children:JSX.Element | JSX.Element[]
@@ -14,12 +15,13 @@ const inital_state:ReducerState={
     status:'not-authenticated',
     user:{} as ReducerUser,
     errors:null,
-    token:''
 }
 
 export const AuthProvider:FC<props> =({children})=>{
 
     const router=useRouter();
+
+    const {data,status}=useSession();
 
     const [state,dispatch]=useReducer(AuthReducer,inital_state);
 
@@ -29,7 +31,7 @@ export const AuthProvider:FC<props> =({children})=>{
             if(!Cookie.get('token')) return ;
 
 
-            const {data}=await tesloApi.get('/auth/validate-token');        
+            const {data}=await tesloApi.get('/user/validate-token');        
     
             const {user,token}=data;
     
@@ -51,14 +53,20 @@ export const AuthProvider:FC<props> =({children})=>{
     }
 
     useEffect(()=>{
-        startAuthenticating();
-    },[])
+        if(status==='authenticated'){
+            dispatch({type:'SET-USER',payload:data.user as ReducerUser})
+        }
+    },[status,data])
+
+    // useEffect(()=>{
+    //     startAuthenticating();
+    // },[])
 
     const startLogin=async(email:string,password:string):Promise<boolean>=>{
         dispatch({type:'SET-STATUS',payload:'loading'});
         try{
 
-            const {data}=await tesloApi.post('/auth/login',{email,password});
+            const {data}=await tesloApi.post('/user/login',{email,password});
 
             const {user,token}=data;
 
@@ -87,7 +95,7 @@ export const AuthProvider:FC<props> =({children})=>{
         dispatch({type:'SET-STATUS',payload:'loading'});
         try{
 
-            const {data}=await tesloApi.post('/auth/register',{email,password,name});
+            const {data}=await tesloApi.post('/user/register',{email,password,name});
 
             const {user,token}=data;
 
@@ -117,8 +125,10 @@ export const AuthProvider:FC<props> =({children})=>{
         dispatch({type:'LOG-OUT'});
         Cookie.remove('token');
         Cookie.remove('cart');
+        Cookie.remove('direccion');
+        signOut();
         //Recargar la aplicacion como si se diese f5
-        router.reload();
+        //router.reload();
     }
 
     return(

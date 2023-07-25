@@ -17,7 +17,7 @@ const UserSchema=new Schema({
         unique:true,
         lowercase:true,
         trim:true,
-        maxlength:[25,"No debe tener mas de 25 caracteres"],
+        maxlength:[45,"No debe tener mas de 45 caracteres"],
         minlength:[5,"Debe tener mas de 5 caracteres"],
         validate:[validator.isEmail,"Por favor proporciona un email"]
     },
