@@ -7,13 +7,12 @@ import NextLink from 'next/link';
 import { useContext } from 'react';
 import { CartContext } from '@/Context/CartContext';
 import { useRouter } from 'next/router';
-import { formData } from './address';
 import { Loader } from '@/components/UI/Loader';
 import Cookie from 'js-cookie';
 
 const Summary = () => {
 
-  const {productos,direccion}=useContext(CartContext);
+  const {productos,direccion,onCreateOrder}=useContext(CartContext);
 
   const router=useRouter();
 
@@ -22,6 +21,10 @@ const Summary = () => {
         router.push('/checkout/address')
     }
   },[router])
+
+  const createOrder=()=>{
+    onCreateOrder();
+  }
 
   if(Object.keys(direccion).length===0){
     return (<><Loader/></>)
@@ -49,7 +52,7 @@ const Summary = () => {
                     <Typography variant='subtitle1'>{direccion.nombre+direccion.apellido}</Typography>
                     <Typography variant='subtitle1'>{direccion.direccion}{direccion.direccion2 ? `${direccion.direccion2}` : ''}</Typography>
                     <Typography variant='subtitle1'>{direccion.cod_postal}</Typography>
-                    <Typography variant='subtitle1'>{direccion.pais}</Typography>
+                    <Typography variant='subtitle1'>{direccion.country}-{direccion.ciudad}</Typography>
                     <Typography variant='subtitle1'>{direccion.telefono}</Typography>
 
                     <Divider sx={{my:1}}/>
@@ -61,7 +64,7 @@ const Summary = () => {
                     <OrderSummary/>
 
                     <Box sx={{mt:3}}>
-                        <Button color='secondary' className='circular-btn' fullWidth>Confirmar orden</Button>
+                        <Button onClick={createOrder} color='secondary' className='circular-btn' fullWidth>Confirmar orden</Button>
                     </Box>
 
                 </CardContent>

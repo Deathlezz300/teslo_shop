@@ -1,5 +1,5 @@
 import { CheckUserEmailPassword, registerUser } from "@/database/DbUsers";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from 'next-auth/providers/github'
 
@@ -9,7 +9,7 @@ declare module 'next-auth'{
     }
 }
 
-export default NextAuth({
+export const authOptions:NextAuthOptions=({
     providers:[
         Credentials({
             name:'Custom login',
@@ -65,3 +65,5 @@ export default NextAuth({
         }
     }
 })
+
+export default NextAuth(authOptions);

@@ -12,7 +12,8 @@ interface CartProps{
     RemoveFromCart:(producto:ICartProducto)=>void,
     status:boolean,
     direccion:formData,
-    ChangeDireccion:(data:formData)=>void
+    ChangeDireccion:(data:formData)=>void,
+    onCreateOrder:()=>Promise<boolean>
 }
 
 export const CartContext=createContext({} as CartProps)

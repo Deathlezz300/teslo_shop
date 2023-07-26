@@ -5,7 +5,8 @@ import { ICartProducto } from "@/interfaces/Cart";
 import Cookie from 'js-cookie'
 import { AddProductCalculate, RemoveProductCalculate, calculateTotal,
      changeCantidadCalculate, valoresPrecios } from "./Helpers/CalculateTotal";
-import { formData } from "@/pages/checkout/address";
+import tesloApi from "@/api/teslo_api";
+import { IDireccion, IOrder } from "@/interfaces/Order";
 
 interface props{
     children:JSX.Element | JSX.Element[]
@@ -22,7 +23,7 @@ export const CartProvider:FC<props>=({children})=>{
 
     const [firtsCharge,SetCharge]=useState<boolean>(true);
 
-    const [direccion,SetDireccion]=useState<formData>({} as formData);
+    const [direccion,SetDireccion]=useState<IDireccion>({} as IDireccion);
 
     useEffect(()=>{
         const productos=Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : []
@@ -77,12 +78,39 @@ export const CartProvider:FC<props>=({children})=>{
         SetValores(RemoveProductCalculate(valoresPrecios,producto))
     }
 
-    const ChangeDireccion=(data:formData)=>{
+    const ChangeDireccion=(data:IDireccion)=>{
         SetDireccion(data);
+    }
+
+    const onCreateOrder=async():Promise<boolean>=>{
+        
+        if(Object.keys(direccion).length===0) return false;
+        
+        try{
+
+            const body:IOrder={
+                orderItems:state.map(produ=>({...produ,sizes:produ.sizes!})),
+                DireccionEnvio:direccion,
+                n_productos:state.length,
+                subtotal:valoresPrecios.subtotal,
+                impuestos:valoresPrecios.impuestos,
+                total:valoresPrecios.total,
+                isPaid:false
+            }
+
+            const {data}=await tesloApi.post('/orders',body);
+
+            console.log(data);
+
+            return true
+
+        }catch(error){
+            return false;
+        }
     }
     
     return(
-        <CartContext.Provider value={{productos:state,onAddProductCart,LessProductoCard,RemoveFromCart,valoresPrecios,status,direccion,ChangeDireccion}}>
+        <CartContext.Provider value={{productos:state,onAddProductCart,LessProductoCard,RemoveFromCart,valoresPrecios,status,direccion,ChangeDireccion,onCreateOrder}}>
             {children}
         </CartContext.Provider>
     )

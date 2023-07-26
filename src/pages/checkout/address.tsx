@@ -7,19 +7,11 @@ import Cookie from 'js-cookie'
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { CartContext } from "@/Context/CartContext";
+import { IDireccion } from "@/interfaces/Order";
 // import { GetServerSideProps } from 'next'
 // import { isValidToken } from "@/utils/jwt";
 
-export interface formData{
-    nombre:string,
-    apellido:string,
-    direccion:string,
-    direccion2?:string,
-    cod_postal:string,
-    pais:string,
-    ciudad:string,
-    telefono:string
-}
+
 
  const AddressPage:NextPage = () => {
 
@@ -27,11 +19,11 @@ export interface formData{
 
   const {ChangeDireccion}=useContext(CartContext);
 
-  const {register,handleSubmit,formState:{errors}}=useForm<formData>({
+  const {register,handleSubmit,formState:{errors}}=useForm<IDireccion>({
     defaultValues:JSON.parse(Cookie.get('direccion') || '{}')
   });
 
-  const onSubmitAddres=(data:formData)=>{
+  const onSubmitAddres=(data:IDireccion)=>{
     Cookie.set('direccion',JSON.stringify(data));
     ChangeDireccion(data);
     router.push('/checkout/summary')
@@ -69,9 +61,9 @@ export interface formData{
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <FormControl fullWidth>
-                        <TextField defaultValue={Cookie.get('direccion') ? JSON.parse(Cookie.get('direccion')!).pais : countries[0].name} select {...register('pais',{
+                        <TextField defaultValue={Cookie.get('direccion') ? JSON.parse(Cookie.get('direccion')!).pais : countries[0].name} select {...register('country',{
                             required:'Este campo es obligatorio'
-                        })} error={!!errors.pais} helperText={errors.pais?.message}  variant="filled" label="Pais">
+                        })} error={!!errors.country} helperText={errors.country?.message}  variant="filled" label="Pais">
                             {
                                 countries.map(country=>{
                                     return <MenuItem key={country.code} value={country.name}>{country.name}</MenuItem>
