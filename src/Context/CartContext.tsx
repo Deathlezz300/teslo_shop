@@ -1,7 +1,7 @@
 import { ICartProducto } from '@/interfaces/Cart'
 import {createContext} from 'react'
 import { valoresPrecios } from './Helpers/CalculateTotal'
-import { formData } from '@/pages/checkout/address'
+import { IDireccion } from '@/interfaces/Order'
 
 
 interface CartProps{
@@ -11,9 +11,9 @@ interface CartProps{
     LessProductoCard:(producto:ICartProducto)=>void,
     RemoveFromCart:(producto:ICartProducto)=>void,
     status:boolean,
-    direccion:formData,
-    ChangeDireccion:(data:formData)=>void,
-    onCreateOrder:()=>Promise<boolean>
+    direccion:IDireccion,
+    ChangeDireccion:(data:IDireccion)=>void,
+    onCreateOrder:()=>Promise<{hasError:boolean,message:string}>
 }
 
 export const CartContext=createContext({} as CartProps)

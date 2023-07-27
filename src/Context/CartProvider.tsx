@@ -7,6 +7,7 @@ import { AddProductCalculate, RemoveProductCalculate, calculateTotal,
      changeCantidadCalculate, valoresPrecios } from "./Helpers/CalculateTotal";
 import tesloApi from "@/api/teslo_api";
 import { IDireccion, IOrder } from "@/interfaces/Order";
+import axios from "axios";
 
 interface props{
     children:JSX.Element | JSX.Element[]
@@ -31,7 +32,7 @@ export const CartProvider:FC<props>=({children})=>{
         dispatch({type:'SET-CART',payload:productos});
         SetValores(calculateTotal(productos));
         SetDireccion(dataForm);
-        SetStatus(true)
+        SetStatus(true);
     },[])
 
     useEffect(()=>{
@@ -82,9 +83,12 @@ export const CartProvider:FC<props>=({children})=>{
         SetDireccion(data);
     }
 
-    const onCreateOrder=async():Promise<boolean>=>{
-        
-        if(Object.keys(direccion).length===0) return false;
+    const onCreateOrder=async():Promise<{hasError:boolean,message:string}>=>{
+        SetStatus(false);       
+        if(Object.keys(direccion).length===0){
+            SetStatus(true);
+            return {hasError:true,message:'No hay direccion de envio'}
+        }
         
         try{
 
@@ -98,14 +102,30 @@ export const CartProvider:FC<props>=({children})=>{
                 isPaid:false
             }
 
-            const {data}=await tesloApi.post('/orders',body);
+            const {data}=await tesloApi.post<IOrder>('/orders',body);
 
-            console.log(data);
+            Cookie.remove('cart');
+            dispatch({type:'SET-CART',payload:[]})
+            SetStatus(true);
 
-            return true
+            return {
+                hasError:false,
+                message:data._id as string
+            }
 
-        }catch(error){
-            return false;
+        }catch(error:any){
+            SetStatus(true);
+            if(axios.isAxiosError(error)){
+                return {
+                    hasError:true,
+                    message:error.response?.data.message
+                }
+            }
+
+            return {
+                hasError:true,
+                message:'Ha ocurrido un error, hable con el administrador'
+            }
         }
     }
     

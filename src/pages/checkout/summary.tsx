@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { ShopLayout } from '@/layouts/ShopLayout';
 import { CartList } from '@/components/cart/CartList';
-import { Link,Typography,Grid,Card,CardContent,Divider,Box,Button } from '@mui/material';
+import { Link,Typography,Grid,Card,CardContent,Divider,Box,Button, Chip } from '@mui/material';
 import { OrderSummary } from '@/components/cart/OrderSummary';
 import NextLink from 'next/link';
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import { CartContext } from '@/Context/CartContext';
 import { useRouter } from 'next/router';
 import { Loader } from '@/components/UI/Loader';
@@ -12,9 +12,11 @@ import Cookie from 'js-cookie';
 
 const Summary = () => {
 
-  const {productos,direccion,onCreateOrder}=useContext(CartContext);
+  const {productos,direccion,onCreateOrder,status}=useContext(CartContext);
 
   const router=useRouter();
+
+  const [errors,SetErrors]=useState<{hasError:boolean,message:string}>({hasError:false,message:''});
 
   useEffect(()=>{
     if(!Cookie.get('direccion')){
@@ -22,8 +24,17 @@ const Summary = () => {
     }
   },[router])
 
-  const createOrder=()=>{
-    onCreateOrder();
+  const createOrder=async()=>{
+    if(!status) return;
+    
+    const isValidOrder=await onCreateOrder();
+
+    if(isValidOrder.hasError){
+        return SetErrors({hasError:true,message:isValidOrder.message})
+    }
+
+    router.replace(`/orders/${isValidOrder.message}`);
+
   }
 
   if(Object.keys(direccion).length===0){
@@ -64,8 +75,10 @@ const Summary = () => {
                     <OrderSummary/>
 
                     <Box sx={{mt:3}}>
-                        <Button onClick={createOrder} color='secondary' className='circular-btn' fullWidth>Confirmar orden</Button>
+                        <Button onClick={createOrder} disabled={!status} color='secondary' className='circular-btn' fullWidth>Confirmar orden</Button>
                     </Box>
+
+                    <Chip color='error' label={errors.message} sx={{display:errors.hasError ? 'flex' : 'none',mt:2}}/>
 
                 </CardContent>
             </Card>
