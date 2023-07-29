@@ -7,25 +7,28 @@ import { UIProvider } from '@/Context/UIProvider'
 import { CartProvider } from '@/Context/CartProvider'
 import { AuthProvider } from '@/Context/AuthProvider'
 import {SessionProvider} from 'next-auth/react'
+import {PayPalScriptProvider} from '@paypal/react-paypal-js'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider>
-          <AuthProvider>
-          <CartProvider>
-            <UIProvider>
-              <SWRConfig
-              value={{
-                fetcher:(...args:[key:string])=>fetch(...args).then(res=>res.json())
-              }}>
-                <ThemeProvider theme={lightTheme}>
-                  <CssBaseline/>
-                  <Component {...pageProps} />
-              </ThemeProvider>
-            </SWRConfig>
-          </UIProvider>
-        </CartProvider>
-      </AuthProvider>
+          <PayPalScriptProvider options={{clientId:process.env.NEXT_PUBLIC_PAYPAL_CLIENT || ''}}>
+              <AuthProvider>
+              <CartProvider>
+                <UIProvider>
+                  <SWRConfig
+                  value={{
+                    fetcher:(...args:[key:string])=>fetch(...args).then(res=>res.json())
+                  }}>
+                    <ThemeProvider theme={lightTheme}>
+                      <CssBaseline/>
+                      <Component {...pageProps} />
+                  </ThemeProvider>
+                </SWRConfig>
+              </UIProvider>
+            </CartProvider>
+          </AuthProvider>
+        </PayPalScriptProvider>
     </SessionProvider>
   )
 }
