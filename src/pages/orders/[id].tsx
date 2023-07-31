@@ -68,7 +68,7 @@ const OrderPage:NextPage<props> = ({order}) => {
         <Grid item xs={12} sm={5}>
             <Card className='summary-cart'>
                 <CardContent>
-                    <Typography variant='h2'>Resumen {`${order.n_productos} ${order.n_productos>1 ? 's' : ''}`}</Typography>
+                    <Typography variant='h2'>Resumen {`${order.n_productos} ${order.n_productos>1 ? 'Productos' : 'Producto'}`}</Typography>
                     <Divider sx={{my:1}}/>
 
                     <Box display='flex' justifyContent='space-between'>
