@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
  const DashboradPage = () => {
 
-   const {data,error}=useSWR<DashboardSummary>('http://localhost:3000/api/admin/dashboard',{
+   const {data,error}=useSWR<DashboardSummary>('/api/admin/dashboard',{
         refreshInterval:30*1000
    });
 

@@ -43,3 +43,21 @@ export const getOrders=async(userId:string):Promise<IOrder[]>=>{
     }
 
 }
+
+export const getOrderAdmin=async(id:string):Promise<IOrder | null>=>{
+
+    try{
+
+        await connectMongo();
+
+        const order=await Order.findById(id).lean();
+
+
+        return JSON.parse(JSON.stringify(order));
+
+
+    }catch(error){
+        return null;
+    }
+
+}
