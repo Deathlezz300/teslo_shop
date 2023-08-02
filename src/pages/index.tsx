@@ -9,6 +9,7 @@ import { Loader } from "@/components/UI/Loader";
 
 const HomePage:NextPage=()=>{
 
+
    const {productos,isLoading}=useProductos('/productos');
 
   return(

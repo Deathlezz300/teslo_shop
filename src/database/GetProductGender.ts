@@ -92,3 +92,24 @@ export const SearchByParams=async(query:string):Promise<IProducto[]>=>{
     }
 
 }
+
+export const getProductBySlugAllData=async(slug:string)=>{
+    try{
+
+        await connectMongo();
+
+        const producto=await Producto.findOne({slug}).lean();
+
+        await disconnectMongose();
+
+        if(!producto) return null;
+
+
+        return JSON.parse(JSON.stringify(producto));
+
+
+    }catch(error){
+        console.log(error);
+        return null;
+    }
+}
