@@ -1,6 +1,6 @@
 import { AdminLayout } from '@/layouts/AdminLayout'
-import { CategoryOutlined } from '@mui/icons-material'
-import {  CardMedia, Grid, Link } from '@mui/material'
+import { AddOutlined, CategoryOutlined } from '@mui/icons-material'
+import {  Box, Button, CardMedia, Grid, Link } from '@mui/material'
 import { DataGrid, GridColDef,GridRenderCellParams } from '@mui/x-data-grid'
 import React from 'react'
 import useSWR from 'swr';
@@ -15,7 +15,7 @@ const columns:GridColDef[]=[
         renderCell:(params:GridRenderCellParams)=>{
             return(
                 <a href={`/products/${params.row.slug}`} target='_blank'>
-                    <CardMedia component='img' className='fadeIn' image={`/products/${params.row.img}`}/>
+                    <CardMedia component='img' className='fadeIn' image={params.row.img}/>
                 </a>
             )
         }
@@ -67,6 +67,14 @@ interface peticion{
     return (
     <AdminLayout title={`Productos ${data?.productos.length}`} subtitle='Mantenimiento de productos'
         icon={<CategoryOutlined/>}>
+        <Box display='flex' justifyContent='end' sx={{mb:2}}>
+            <Button
+                startIcon={<AddOutlined/>}
+                color='secondary'
+                href='/admin/products/new'>
+                Crear producto
+            </Button>
+        </Box>
         <Grid container sx={{mt:2}} className="fadeIn">
             <Grid item xs={12} sx={{height:650,width:'100%'}}>
                 <DataGrid rows={rows} columns={columns}

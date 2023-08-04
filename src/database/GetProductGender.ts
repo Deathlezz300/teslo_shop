@@ -16,8 +16,16 @@ export const GetProductsByGender=async(gender:string):Promise<IProducto[] | null
             .select('title images price inStock slug -_id').lean();
 
         await disconnectMongose();
+        
+        const productosUpdate=productos.map(producto=>{
+            producto.images=producto.images.map(image=>{
+               return image.includes('http') ? image : `${process.env.HOST_NAME}/products/${ image }`
+            })
 
-        return productos;
+            return producto;
+        });
+
+        return productosUpdate;
 
     }catch(error){
         console.log(error);
@@ -38,6 +46,9 @@ export const GetProductBySlug=async(slug:string):Promise<IProducto | null>=>{
 
         if(!producto) return null;
 
+        producto.images=producto.images.map(image=>{
+            return image.includes('http') ? image : `${process.env.HOST_NAME}/products/${ image }`
+        })
 
         return JSON.parse(JSON.stringify(producto));
 
@@ -84,7 +95,15 @@ export const SearchByParams=async(query:string):Promise<IProducto[]>=>{
 
         await disconnectMongose();
 
-        return productos;
+        const productosUpdate=productos.map(producto=>{
+            producto.images=producto.images.map(image=>{
+               return image.includes('http') ? image : `${process.env.HOST_NAME}/products/${ image }`
+            })
+
+            return producto;
+        });
+
+        return productosUpdate;
 
     }catch(error){
         console.log(error);
@@ -103,6 +122,10 @@ export const getProductBySlugAllData=async(slug:string)=>{
         await disconnectMongose();
 
         if(!producto) return null;
+
+        producto.images=producto.images.map(image=>{
+            return image.includes('http') ? image : `${process.env.HOST_NAME}/products/${ image }`
+        })
 
 
         return JSON.parse(JSON.stringify(producto));

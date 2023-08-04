@@ -40,7 +40,7 @@ export const CartList:FC<props> = ({editable,productos=[]}) => {
                     <Grid item xs={3}>
                         <Link underline='none' href={`/products/${product.slug}`} component={NextLink}>
                             <CardActionArea>
-                                <CardMedia image={`/products/${product.images}`}
+                                <CardMedia image={product.images}
                                     component='img' sx={{borderRadius:'5px'}}/>
                             </CardActionArea>
                         </Link>
