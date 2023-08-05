@@ -419,7 +419,6 @@ export const getServerSideProps: GetServerSideProps = async ({query}) => {
     }else{
         const tempProducto=JSON.parse(JSON.stringify(new Producto()));
         delete tempProducto._id;
-        tempProducto.images=['img1.jpg','img2.jpg']
         producto=tempProducto;
     }
 
