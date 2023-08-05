@@ -9,7 +9,7 @@ type peticion={
 }
 
 export const useProductos=(url:string,config:SWRConfiguration={})=>{
-    const {data,error}=useSWR<peticion>(`http://localhost:3000/api${url}`,config);
+    const {data,error}=useSWR<peticion>(`/api${url}`,config);
 
 
     return{
