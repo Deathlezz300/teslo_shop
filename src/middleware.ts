@@ -13,9 +13,12 @@ export async function middleware(req:NextRequest){
 
     // const token = req.cookies.get("token")?.value;
     if(!session){
-      return NextResponse.redirect(
-        new URL(`/auth/login?p=${previousPage}`)
-      )
+
+      const url=req.nextUrl.clone();
+      url.pathname='/auth/login';
+      url.search=`?p=${previousPage}`
+
+      return NextResponse.redirect(url)
     }
 
 
